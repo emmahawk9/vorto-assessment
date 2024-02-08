@@ -2,6 +2,7 @@
 References used: """
 
 from sys import argv
+import math
 
 # To drive from (x1, y1) to (x2, y2) takes sqrt((x2-x1)^2 + (y2-y1)^2) minutes
 
@@ -13,21 +14,55 @@ from sys import argv
 
 # Need list of drivers, each with ordered list of loads to complete (all loads must be assigned to a driver)
 
-
+def euclidean_distance(p1, p2): 
+    # if tuple:
+    x1, y1 = p1
+    x2, y2 = p2
+    euc_distance = math.sqrt((x2-x1) ** 2 + (y2-y1) ** 2)
+    return euc_distance
 
 number_of_drivers = 0
 total_number_of_driven_minute = 0
-
+max_time = 12*60
+data = []
+coordinates = []
+distance = []
+time_per_driver = []
 test_file = "Training\TrainingProblems\problem1.txt"
 with open(test_file, "r") as file:
     # Ignore first line
 
 
     # Read routes into array
-    array_lines = [line for line in file.readlines().strip("\n")]
+    # first line: load_id, pick_up, drop_off
+    file_lines = [file.readline().strip("\n")]
 
-# get load id, pick-up, drop-off from 1st line in file
-load_id, pick_up, drop_off = array_lines[0].split(" ")
+    # get data (probs need to use dictionary), need to convert from string to int
+    full_data = file.readlines()
+    
+    for line in full_data:
+        data.append(line.strip().split("\n"))
+    for element in data:
+        for x in element:
+            coordinates.append(x.split())
+    print(coordinates)
+    print(data)
+
+
+    # get number of loads:
+    num_loads = len(data)
+    loads_assigned = []
+    loads_remaining = [int(load[0]) for load in data]
+
+    # calculate euclidean distance for each pair, put in distances list
+
+    distance_matrix = [[0] * len(coordinates) for _ in range(len(coordinates))]
+
+    # Calculate distance between each pair of locations
+    for i in range(len(coordinates)):
+        for j in range(len(coordinates)):
+            distance_matrix[i][j] = euclidean_distance(coordinates[i], coordinates[j])
+
 
 
 # minimize both number of drivers and minutes driven
